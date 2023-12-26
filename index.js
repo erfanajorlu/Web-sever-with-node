@@ -2,7 +2,7 @@ const http = require("http");
 
 const PORT = 3000;
 
-friends = [
+const friends = [
   {
     id: 0,
     name: "Sir Isaac Newton",
@@ -17,7 +17,13 @@ const server = http.createServer();
 server.on("request", (req, res) => {
   const items = req.url.split("/");
 
-  if (items[1] === "friends") {
+  if (req.method === "POST" && items[1] === "friends") {
+    req.on("data", (data) => {
+      const friend = data.toString();
+      console.log("Request: ", friend);
+      friends.push(JSON.parse(friend));
+    });
+  } else if (req.method === "GET" && items[1] === "friends") {
     res.statusCode = 200;
     res.setHeader = ("Content-Type", "application/json");
     if (items.length === 3) {
